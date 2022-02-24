@@ -13,8 +13,11 @@ public class PlayerBehaviour : MonoBehaviour
     // State bools
     private bool isSprinting = false;
     private bool isAiming = false;
+    public bool Aiming { get { return isAiming; } set { isAiming = value; } }
     private bool isShooting = false;
+    public bool Shooting { get { return isShooting; } set { isShooting = value; } }
     private bool isReloading = false;
+    public bool Reloading { get { return isReloading; } set { isReloading = value; } }
 
     // Components
     private Rigidbody rigidbody;
