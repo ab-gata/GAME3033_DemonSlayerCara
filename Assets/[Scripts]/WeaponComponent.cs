@@ -25,10 +25,10 @@ public class WeaponComponent : MonoBehaviour
     // Weapon attributes
     public Transform gripLocation;
     public WeaponStats weaponStats;
-    [SerializeField] protected WeaponHolder weaponHolder;
+    protected WeaponHolder weaponHolder;
 
     public bool isFiring;
-    public bool isRealoding;
+    public bool isReloading;
 
     // Weapon Effects
     [SerializeField] protected ParticleSystem firingEffect;
@@ -72,24 +72,48 @@ public class WeaponComponent : MonoBehaviour
         }
     }
 
-    protected virtual void FireWeapon()
+    public void FireWeapon()
     {
-        weaponStats.bulletsInClip--;
-        Debug.Log("FIRING WEAPON Bullets in clip : " + weaponStats.bulletsInClip);
+        Vector3 hitLocation;
+
+        if (weaponStats.bulletsInClip > 0 && !isReloading && !weaponHolder.Player.Sprinting)
+        {
+            if (firingEffect)
+            {
+                firingEffect.Play();
+            }
+
+            weaponStats.bulletsInClip--;
+            Debug.Log("FIRING WEAPON Bullets in clip : " + weaponStats.bulletsInClip);
+
+            Ray screenRay = mainCamera.ViewportPointToRay(new Vector2(0.5f, 0.5f));
+
+            if (Physics.Raycast(screenRay, out RaycastHit hit, weaponStats.fireDistance, weaponStats.hitLayers))
+            {
+                hitLocation = hit.point;
+                Vector3 hitDirection = hit.point - mainCamera.transform.position;
+                Debug.DrawRay(mainCamera.transform.position, hitDirection.normalized * weaponStats.fireDistance, Color.red, 1);
+            }
+        }
+        else if (weaponStats.bulletsInClip <= 0)
+        {
+            // trigger reload if no bullets left
+            weaponHolder.StartReloading();
+        }
     }
 
-    public virtual void StartReloading()
+    public void StartReloading()
     {
-        isRealoding = true;
+        isReloading = true;
         ReloadWeapon();
     }
 
-    public virtual void StopReloading()
+    public void StopReloading()
     {
-        isRealoding = false;
+        isReloading = false;
     }
 
-    protected virtual void ReloadWeapon()
+    public void ReloadWeapon()
     {
         // stop firing effect if there is one playing
         if (firingEffect && firingEffect.isPlaying)

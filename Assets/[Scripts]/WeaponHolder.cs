@@ -5,25 +5,21 @@ using UnityEngine.InputSystem;
 
 public class WeaponHolder : MonoBehaviour
 {
-    [SerializeField]
-    GameObject weaponToSpawn;
+    // Weapon and hold
+    [SerializeField] private GameObject weaponToSpawn;
+    [SerializeField] private GameObject weaponSocketLocation;
+    [SerializeField] private Transform gripIKSocketLocation;
 
-    public Sprite crossHairImage;
+    // Components
+    private WeaponComponent weaponComponent;
+    private PlayerBehaviour player;
+    public PlayerBehaviour Player { get { return player; } }
+    private Animator playerAnimator;
 
-    [SerializeField]
-    GameObject weaponSocketLocation;
-    [SerializeField]
-    Transform gripIKSocketLocation;
-
-    public Sprite crosshairImage;
-
-    WeaponComponent weaponComponent;
-    public PlayerBehaviour player;
-    Animator playerAnimator;
-
-    bool firingPressed = false;
-
-    public readonly int isFiringHash = Animator.StringToHash("IsFiring");
+    bool shootingPressed = false;
+    
+    // Animation hashes
+    public readonly int isShootingHash = Animator.StringToHash("IsShooting");
     public readonly int isReloadingHash = Animator.StringToHash("IsReloading");
 
     // Start is called before the first frame update
@@ -53,8 +49,8 @@ public class WeaponHolder : MonoBehaviour
 
     public void OnFire(InputValue value)
     {
-        firingPressed = value.isPressed;
-        if (firingPressed)
+        shootingPressed = value.isPressed;
+        if (shootingPressed)
         {
             StartFiring();
         }
@@ -72,14 +68,14 @@ public class WeaponHolder : MonoBehaviour
             return;
         }
 
-        playerAnimator.SetBool(isFiringHash, true);
+        playerAnimator.SetBool(isShootingHash, true);
         player.Shooting = true;
         weaponComponent.StartFiringWeapon();
     }
 
     void StopFiring()
     {
-        playerAnimator.SetBool(isFiringHash, false);
+        playerAnimator.SetBool(isShootingHash, false);
         player.Shooting = false;
         weaponComponent.StopFiringWeapon();
     }
@@ -120,7 +116,7 @@ public class WeaponHolder : MonoBehaviour
         weaponComponent.StopReloading();
         CancelInvoke(nameof(StopReloading));
 
-        if (firingPressed)
+        if (shootingPressed)
         {
             StartFiring();
         }
