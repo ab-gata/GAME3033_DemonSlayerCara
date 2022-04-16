@@ -27,78 +27,34 @@ public class WeaponComponent : MonoBehaviour
     public WeaponStats weaponStats;
     protected WeaponHolder weaponHolder;
 
+    private float timer;
+
     public bool isFiring;
     public bool isReloading;
 
     // Weapon Effects
     [SerializeField] protected ParticleSystem firingEffect;
 
-    // Depending components
-    protected Camera mainCamera;
-
-
-    void Awake()
-    {
-        mainCamera = Camera.main;
-    }
-
     public void Initialize(WeaponHolder _weaponHolder)
     {
         weaponHolder = _weaponHolder;
     }
 
-    public virtual void StartFiringWeapon()
+    private void Update()
     {
-        isFiring = true;
-        if (weaponStats.repeating)
+        if (timer > 0)
         {
-            // fireeee
-            InvokeRepeating(nameof(FireWeapon), weaponStats.fireStartDelay, weaponStats.fireRate);
-        }
-        else
-        {
-            FireWeapon();
+            timer -= Time.deltaTime;
         }
     }
 
-    public virtual void StopFiringWeapon()
+    public void TryShoot(EnemyBehaviour eb)
     {
-        isFiring = false;
-        CancelInvoke(nameof(FireWeapon));
-
-        if (firingEffect && firingEffect.isPlaying)
+        if (timer <= 0)
         {
-            firingEffect.Stop();
-        }
-    }
-
-    public void FireWeapon()
-    {
-        Vector3 hitLocation;
-
-        if (weaponStats.bulletsInClip > 0 && !isReloading && !weaponHolder.Player.Sprinting)
-        {
-            if (firingEffect)
-            {
-                firingEffect.Play();
-            }
-
-            weaponStats.bulletsInClip--;
-            Debug.Log("FIRING WEAPON Bullets in clip : " + weaponStats.bulletsInClip);
-
-            Ray screenRay = mainCamera.ViewportPointToRay(new Vector2(0.5f, 0.5f));
-
-            if (Physics.Raycast(screenRay, out RaycastHit hit, weaponStats.fireDistance, weaponStats.hitLayers))
-            {
-                hitLocation = hit.point;
-                Vector3 hitDirection = hit.point - mainCamera.transform.position;
-                Debug.DrawRay(mainCamera.transform.position, hitDirection.normalized * weaponStats.fireDistance, Color.red, 1);
-            }
-        }
-        else if (weaponStats.bulletsInClip <= 0)
-        {
-            // trigger reload if no bullets left
-            weaponHolder.StartReloading();
+            eb.ShotAt(weaponStats.damage);
+            weaponStats.bulletsInClip -= 1;
+            timer = weaponStats.fireRate;
         }
     }
 
@@ -133,5 +89,60 @@ public class WeaponComponent : MonoBehaviour
             weaponStats.bulletsInClip = weaponStats.totalBullets;
             weaponStats.totalBullets = 0;
         }
+    }
+
+    public virtual void StartFiringWeapon()
+    {
+        //isFiring = true;
+        //if (weaponStats.repeating)
+        //{
+        //    // fireeee
+        //    InvokeRepeating(nameof(FireWeapon), weaponStats.fireStartDelay, weaponStats.fireRate);
+        //}
+        //else
+        //{
+        //    FireWeapon();
+        //}
+    }
+
+    public virtual void StopFiringWeapon()
+    {
+        //isFiring = false;
+        //CancelInvoke(nameof(FireWeapon));
+
+        //if (firingEffect && firingEffect.isPlaying)
+        //{
+        //    firingEffect.Stop();
+        //}
+    }
+
+    public void FireWeapon()
+    {
+        //Vector3 hitLocation;
+
+        //if (weaponStats.bulletsInClip > 0 && !isReloading && !weaponHolder.Player.Sprinting)
+        //{
+        //    if (firingEffect)
+        //    {
+        //        firingEffect.Play();
+        //    }
+
+        //    weaponStats.bulletsInClip--;
+        //    Debug.Log("FIRING WEAPON Bullets in clip : " + weaponStats.bulletsInClip);
+
+        //    Ray screenRay = mainCamera.ViewportPointToRay(new Vector2(0.5f, 0.5f));
+
+        //    if (Physics.Raycast(screenRay, out RaycastHit hit, weaponStats.fireDistance, weaponStats.hitLayers))
+        //    {
+        //        hitLocation = hit.point;
+        //        Vector3 hitDirection = hit.point - mainCamera.transform.position;
+        //        Debug.DrawRay(mainCamera.transform.position, hitDirection.normalized * weaponStats.fireDistance, Color.red, 1);
+        //    }
+        //}
+        //else if (weaponStats.bulletsInClip <= 0)
+        //{
+        //    // trigger reload if no bullets left
+        //    weaponHolder.StartReloading();
+        //}
     }
 }

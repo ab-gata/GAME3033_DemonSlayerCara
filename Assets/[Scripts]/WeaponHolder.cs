@@ -10,6 +10,9 @@ public class WeaponHolder : MonoBehaviour
     [SerializeField] private GameObject weaponSocketLocation;
     [SerializeField] private Transform gripIKSocketLocation;
 
+    [SerializeField, Header("Raycasting")]
+    private LayerMask layerMask;
+
     // Components
     private WeaponComponent weaponComponent;
     private PlayerBehaviour player;
@@ -17,7 +20,7 @@ public class WeaponHolder : MonoBehaviour
     private Animator playerAnimator;
 
     bool shootingPressed = false;
-    
+
     // Animation hashes
     public readonly int isShootingHash = Animator.StringToHash("IsShooting");
     public readonly int isReloadingHash = Animator.StringToHash("IsReloading");
@@ -88,11 +91,6 @@ public class WeaponHolder : MonoBehaviour
 
     public void StartReloading()
     {
-        if (player.Shooting)
-        {
-            StopFiring();
-        }
-
         if (weaponComponent.weaponStats.totalBullets <= 0)
         {
             return;
@@ -119,6 +117,30 @@ public class WeaponHolder : MonoBehaviour
         if (shootingPressed)
         {
             StartFiring();
+        }
+    }
+
+    public void OnShoot(InputValue value)
+    {
+        if (weaponComponent.weaponStats.bulletsInClip > 0)
+        {
+            if (player.Reloading == false)
+            {
+                bool hit = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo, 20, layerMask);
+
+                if (hit)
+                {
+                    if (hitInfo.collider.CompareTag("Enemy"))
+                    {
+                        weaponComponent.TryShoot(hitInfo.collider.GetComponent<EnemyBehaviour>());
+                    }
+
+                }
+            }
+        }
+        else
+        {
+            StartReloading();
         }
     }
 }
