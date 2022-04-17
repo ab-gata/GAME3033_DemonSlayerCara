@@ -122,13 +122,6 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void OnPause()
     {
-        if (pauseUI.activeSelf)
-        {
-            pauseUI.SetActive(false);
-        }
-        else
-        {
-            pauseUI.SetActive(true);
-        }
+        pauseUI.SetActive(!pauseUI.activeSelf);
     }
 }

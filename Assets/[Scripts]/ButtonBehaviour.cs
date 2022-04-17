@@ -9,6 +9,9 @@ public class ButtonBehaviour : MonoBehaviour
     MusicManager musicManager = null;
     SoundManager soundManager = null;
 
+    [SerializeField]
+    private GameObject pauseUI;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +35,17 @@ public class ButtonBehaviour : MonoBehaviour
 
         // Load Scene
         SceneManager.LoadScene("Game");
+    }
+
+    public void ResumeButton()
+    {
+        // Play Sound
+        soundManager.PlaySound(SoundManager.TrackID.BUTTON);
+
+        if (pauseUI)
+        {
+            pauseUI.SetActive(false);
+        }
     }
 
     public void QuitButton()
