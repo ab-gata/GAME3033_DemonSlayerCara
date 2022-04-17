@@ -50,6 +50,11 @@ public class WeaponHolder : MonoBehaviour
         }
     }
 
+    public void AddBulletDamage(int value)
+    {
+        weaponComponent.AddBulletDamage(value);
+    }
+
     public void OnFire(InputValue value)
     {
         shootingPressed = value.isPressed;

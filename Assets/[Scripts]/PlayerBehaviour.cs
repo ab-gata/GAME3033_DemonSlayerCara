@@ -41,7 +41,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     // Player stats
     private int health = 100;
-    private int defense = 5;
+    private float defense = 5;
 
 
 
@@ -97,12 +97,17 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
-        int netDamage = damage - defense;
-        if (netDamage > 0)
+        float netDamage = damage - (damage * defense / 100);
+
+        if (netDamage > 1)
         {
-            health -= netDamage;
+            health -= (int)netDamage;
+        }
+        else
+        {
+            health--;
         }
 
         if (health <= 0)
@@ -110,7 +115,7 @@ public class PlayerBehaviour : MonoBehaviour
             game.Lose();
         }
 
-        game.UpdateStatsHUD(health, defense);
+        game.UpdateStatsHUD(health, (int)defense);
     }
 
     public void AddHealth(int value)
@@ -119,14 +124,14 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (health > 100) health = 100;
 
-        game.UpdateStatsHUD(health, defense);
+        game.UpdateStatsHUD(health, (int)defense);
     }
 
     public void AddDefense(int value)
     {
         defense += value;
 
-        game.UpdateStatsHUD(health, defense);
+        game.UpdateStatsHUD(health, (int)defense);
     }
 
     public void OnLook(InputValue value)

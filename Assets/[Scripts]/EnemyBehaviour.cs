@@ -7,16 +7,16 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField]
     private float health = 10;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    private float damage = 10;
 
-    // Update is called once per frame
-    void Update()
+    private GameController game;
+    private PlayerBehaviour player;
+
+    private void Start()
     {
-        
+        game = FindObjectOfType<GameController>();
+        player = FindObjectOfType<PlayerBehaviour>();
     }
 
     public void ShotAt(float damage)
@@ -26,7 +26,16 @@ public class EnemyBehaviour : MonoBehaviour
         if (health <= 0)
         {
             gameObject.SetActive(false);
-            Debug.Log("DEATH");
         }
+    }
+
+    private float GetDamage()
+    {
+        if (game.phase2)
+        {
+            return damage * 2f;
+        }
+
+        return damage;
     }
 }

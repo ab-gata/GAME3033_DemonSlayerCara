@@ -8,13 +8,14 @@ public class GameController : MonoBehaviour
 {
     [SerializeField, Header("Object Interaction")]
     private PlayerBehaviour player;
-    [SerializeField] WeaponComponent weapon;
+    [SerializeField] WeaponHolder weapon;
 
     [SerializeField, Header("Object Interaction")]
     private LayerMask hitLayers;
 
     [SerializeField, Header("User Interface")] private GameObject pauseUI;
     [SerializeField] private Text objectiveText;
+    [SerializeField] private Text timeTitleText;
     [SerializeField] private Text timeText;
     [SerializeField] private Text keysText;
     [SerializeField] private Text healthText;
@@ -26,10 +27,13 @@ public class GameController : MonoBehaviour
     private GameObject doorObject;
     private GameObject keyObject;
     private UpgradeBehaviour upgradeObject;
-    private TomeBehaviour tomeObject;
+    private GameObject tomeObject;
 
     private int keyCount = 0;
     private string objective = "Find the Tome of Evil";
+
+    public bool phase2 = false;
+    private float timer = 5;
 
 
     // Start is called before the first frame update
@@ -61,14 +65,15 @@ public class GameController : MonoBehaviour
             }
             else if (hitInfo.collider.CompareTag("Upgrade"))
             {
-                interactPromptText.text = "Press [E]";
                 upgradeObject = hitInfo.collider.GetComponent<UpgradeBehaviour>();
-                interactPromptText.text = "";
+                interactText.text = "UPGRADE : " + UpgradeText();
+                interactPromptText.text = "Press [E]";
             }
             else if (hitInfo.collider.CompareTag("Tome"))
             {
+                interactText.text = "TOME OF EVIL : collect objective";
                 interactPromptText.text = "Press [E]";
-                tomeObject = hitInfo.collider.GetComponent<TomeBehaviour>();
+                tomeObject = hitInfo.collider.gameObject;
             }
         }
         else
@@ -82,16 +87,30 @@ public class GameController : MonoBehaviour
             tomeObject = null;
         }
 
+        // Timer for phase 2
+        if (phase2)
+        {
+            timer -= Time.deltaTime;
+            timeText.text = ((int)timer).ToString();
+
+            if (timer < 0)
+            {
+                Lose();
+            }
+        }
+
         // Mouse lock depending on if menu is shown
         if (pauseUI)
         {
             if (pauseUI.activeSelf)
             {
                 Cursor.lockState = CursorLockMode.None;
+                Time.timeScale = 0.0f;
             }
             else
             {
                 Cursor.lockState = CursorLockMode.Locked;
+                Time.timeScale = 1.0f;
             }
         }
     }
@@ -113,6 +132,28 @@ public class GameController : MonoBehaviour
     {
         healthText.text = "Health : " + health + " / 100";
         defenseText.text = "Defense : " + defence;
+    }
+
+    private string UpgradeText()
+    {
+        string words = "";
+
+        if (upgradeObject)
+        {
+            switch (upgradeObject.upgrade)
+            {
+                case UpgradeType.DAMAGE:
+                    words = "Increase Bullet Damage by " + upgradeObject.value;
+                    break;
+                case UpgradeType.DEFENSE:
+                    words = "Increase Defense by " + upgradeObject.value;
+                    break;
+                case UpgradeType.HEALTH:
+                    words = "Increase Health by " + upgradeObject.value;
+                    break;
+            }
+        }
+        return words;
     }
 
     public void Interact()
@@ -148,7 +189,10 @@ public class GameController : MonoBehaviour
         }
         if (tomeObject)
         {
-
+            phase2 = true;
+            tomeObject.SetActive(false);
+            timeTitleText.text = "TIME LEFT";
+            objectiveText.text = "Return to where you entered quickly!";
         }
 
         UpdateGeneralHUD();
