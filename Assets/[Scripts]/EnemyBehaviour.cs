@@ -31,6 +31,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private Animator animator = null;
 
+
     // AI
     Transform target;
     NavMeshAgent agent;

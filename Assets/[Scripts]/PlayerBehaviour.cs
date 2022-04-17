@@ -110,7 +110,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (cooldown<= 0)
         {
-            float netDamage = damage - (damage * defense / 100);
+            float netDamage = damage - (damage * defense / 20);
             if (netDamage > 1)
             {
                 health -= (int)netDamage;
