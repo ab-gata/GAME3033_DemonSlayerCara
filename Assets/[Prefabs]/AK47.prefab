@@ -110,7 +110,7 @@ MonoBehaviour:
   gripLocation: {fileID: 2186006854992095419}
   weaponStats:
     weaponName: AK-47
-    damage: 5
+    damage: 3
     clipSize: 100
     bulletsInClip: 100
     totalBullets: 1000

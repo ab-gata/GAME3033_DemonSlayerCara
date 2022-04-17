@@ -33,7 +33,7 @@ public class GameController : MonoBehaviour
     private string objective = "Find the Tome of Evil";
 
     public bool phase2 = false;
-    private float timer = 5;
+    private float timer = 100;
 
 
     // Start is called before the first frame update

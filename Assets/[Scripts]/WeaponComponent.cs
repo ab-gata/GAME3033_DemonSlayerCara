@@ -45,6 +45,7 @@ public class WeaponComponent : MonoBehaviour
     private void Start()
     {
         game = FindObjectOfType<GameController>();
+        game.UpdateBulletDamageHUD((int)weaponStats.damage);
     }
 
     private void Update()
@@ -60,7 +61,7 @@ public class WeaponComponent : MonoBehaviour
         if (timer <= 0)
         {
             eb.ShotAt(weaponStats.damage);
-            weaponStats.bulletsInClip -= 1;
+            //weaponStats.bulletsInClip -= 1;
             timer = weaponStats.fireRate;
         }
     }

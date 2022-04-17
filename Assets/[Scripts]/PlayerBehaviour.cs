@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField, Header("Player Movement")] private float walkSpeed = 5;
     [SerializeField] private float sprintSpeed = 10;
     [SerializeField] private float aimSensitivity = 5000;
+
+    [SerializeField, Header("UI Effects")] private Image bloodImage;
 
     // State bools
     private bool isSprinting = false;
@@ -43,6 +46,8 @@ public class PlayerBehaviour : MonoBehaviour
     private int health = 100;
     private float defense = 5;
 
+    private float cooldown = 0.0f;
+
 
 
     void Start()
@@ -60,6 +65,10 @@ public class PlayerBehaviour : MonoBehaviour
     
     void Update()
     {
+        if (cooldown > 0)
+        {
+            cooldown -= Time.deltaTime;
+        }
         if (!pauseUI.activeSelf)
         {
             // Camera Rotation
@@ -99,23 +108,27 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        float netDamage = damage - (damage * defense / 100);
-
-        if (netDamage > 1)
+        if (cooldown<= 0)
         {
-            health -= (int)netDamage;
-        }
-        else
-        {
-            health--;
-        }
+            float netDamage = damage - (damage * defense / 100);
+            if (netDamage > 1)
+            {
+                health -= (int)netDamage;
+            }
+            else
+            {
+                health--;
+            }
+            cooldown = 1.5f;
+            bloodImage.color = new Color(1, 0, 0, .3f * (100 - health) / 100);
 
-        if (health <= 0)
-        {
-            game.Lose();
-        }
+            if (health <= 0)
+            {
+                game.Lose();
+            }
 
-        game.UpdateStatsHUD(health, (int)defense);
+            game.UpdateStatsHUD(health, (int)defense);
+        }
     }
 
     public void AddHealth(int value)
@@ -123,6 +136,7 @@ public class PlayerBehaviour : MonoBehaviour
         health += value;
 
         if (health > 100) health = 100;
+        bloodImage.color = new Color(1, 0, 0, .3f * (100 - health)/100);
 
         game.UpdateStatsHUD(health, (int)defense);
     }
@@ -172,5 +186,13 @@ public class PlayerBehaviour : MonoBehaviour
     public void OnInteract()
     {
         game.Interact();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            TakeDamage(other.GetComponent<EnemyBehaviour>().GetDamage());
+        }
     }
 }

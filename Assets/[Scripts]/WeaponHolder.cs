@@ -127,25 +127,16 @@ public class WeaponHolder : MonoBehaviour
 
     public void OnShoot(InputValue value)
     {
-        if (weaponComponent.weaponStats.bulletsInClip > 0)
-        {
-            if (player.Reloading == false)
-            {
-                bool hit = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo, 20, layerMask);
+         bool hit = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo, 20, layerMask);
 
-                if (hit)
-                {
-                    if (hitInfo.collider.CompareTag("Enemy"))
-                    {
-                        weaponComponent.TryShoot(hitInfo.collider.GetComponent<EnemyBehaviour>());
-                    }
+         if (hit)
+         {
+             if (hitInfo.collider.CompareTag("Enemy"))
+             {
+                 Debug.Log("SHOOT");
+                 weaponComponent.TryShoot(hitInfo.collider.GetComponent<EnemyBehaviour>());
+             }
 
-                }
-            }
-        }
-        else
-        {
-            StartReloading();
-        }
+         }
     }
 }
