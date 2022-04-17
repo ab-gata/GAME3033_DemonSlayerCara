@@ -965,7 +965,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 264763214}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 264763216}
+        m_TargetAssemblyTypeName: ButtonBehaviour, Assembly-CSharp
+        m_MethodName: MenuButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &264763214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1348,7 +1360,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 518307449}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 518307451}
+        m_TargetAssemblyTypeName: ButtonBehaviour, Assembly-CSharp
+        m_MethodName: ResumeButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &518307449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3435,6 +3459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a49acea0b0d8498419400233b7eb39c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 10
 --- !u!65 &1991900210
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -28,7 +28,7 @@ public class GameController : MonoBehaviour
     private UpgradeBehaviour upgradeObject;
     private TomeBehaviour tomeObject;
 
-    private int keyCount = 20;
+    private int keyCount = 0;
     private string objective = "Find the Tome of Evil";
 
 
@@ -48,7 +48,8 @@ public class GameController : MonoBehaviour
         {
             if (hitInfo.collider.CompareTag("Door"))
             {
-                interactText.text = "DOOR : use key to unlock";
+                if (keyCount > 0) { interactText.text = "DOOR : use key to unlock"; }
+                else { interactText.text = "DOOR : find a key first!"; }
                 interactPromptText.text = "Press [E]";
                 doorObject = hitInfo.collider.gameObject;
             }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MusicManager : MonoBehaviour
 {
-    private float volume = 0.3f;
+    private float volume = 0.5f;
     // Music manager, a singleton
     private MusicManager() { }
 
