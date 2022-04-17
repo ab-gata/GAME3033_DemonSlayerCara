@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
 {
     [SerializeField, Header("Object Interaction")]
     private PlayerBehaviour player;
+    [SerializeField] WeaponComponent weapon;
 
     [SerializeField, Header("Object Interaction")]
     private LayerMask hitLayers;
@@ -22,18 +23,20 @@ public class GameController : MonoBehaviour
     [SerializeField] private Text interactText;
     [SerializeField] private Text interactPromptText;
 
-    private DoorBehaviour doorObject;
-    private KeyBehaviour keyObject;
+    private GameObject doorObject;
+    private GameObject keyObject;
     private UpgradeBehaviour upgradeObject;
     private TomeBehaviour tomeObject;
 
-    private int keyCount = 0;
+    private int keyCount = 20;
+    private string objective = "Find the Tome of Evil";
 
 
     // Start is called before the first frame update
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        UpdateGeneralHUD();
     }
 
     // Update is called once per frame
@@ -45,13 +48,15 @@ public class GameController : MonoBehaviour
         {
             if (hitInfo.collider.CompareTag("Door"))
             {
+                interactText.text = "DOOR : use key to unlock";
                 interactPromptText.text = "Press [E]";
-                doorObject = hitInfo.collider.GetComponent<DoorBehaviour>();
+                doorObject = hitInfo.collider.gameObject;
             }
             else if (hitInfo.collider.CompareTag("Key"))
             {
+                interactText.text = "KEY : use this to unlock doors";
                 interactPromptText.text = "Press [E]";
-                keyObject = hitInfo.collider.GetComponent<KeyBehaviour>();
+                keyObject = hitInfo.collider.gameObject;
             }
             else if (hitInfo.collider.CompareTag("Upgrade"))
             {
@@ -92,7 +97,8 @@ public class GameController : MonoBehaviour
 
     private void UpdateGeneralHUD()
     {
-        
+        keysText.text = keyCount.ToString();
+        objectiveText.text = objective;
     }
 
     // Called from weapon
@@ -112,30 +118,39 @@ public class GameController : MonoBehaviour
     {
         if (doorObject)
         {
-
+            if (keyCount > 0)
+            {
+                doorObject.SetActive(false);
+                keyCount--;
+            }
         }
         if (keyObject)
         {
-
+            keyCount++;
+            keyObject.SetActive(false);
         }
         if (upgradeObject)
         {
             switch (upgradeObject.upgrade)
             {
                 case UpgradeType.DAMAGE:
-                    player.AddDefense(upgradeObject.value);
+                    weapon.AddBulletDamage(upgradeObject.value);
                     break;
                 case UpgradeType.DEFENSE:
                     player.AddDefense(upgradeObject.value);
                     break;
                 case UpgradeType.HEALTH:
+                    player.AddHealth(upgradeObject.value);
                     break;
             }
+            upgradeObject.gameObject.SetActive(false);
         }
         if (tomeObject)
         {
 
         }
+
+        UpdateGeneralHUD();
     }
 
     public void Lose()
