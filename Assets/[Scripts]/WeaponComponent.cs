@@ -32,12 +32,19 @@ public class WeaponComponent : MonoBehaviour
     public bool isFiring;
     public bool isReloading;
 
+    private GameController game;
+
     // Weapon Effects
     [SerializeField] protected ParticleSystem firingEffect;
 
     public void Initialize(WeaponHolder _weaponHolder)
     {
         weaponHolder = _weaponHolder;
+    }
+
+    private void Start()
+    {
+        game = FindObjectOfType<GameController>();
     }
 
     private void Update()
@@ -56,6 +63,13 @@ public class WeaponComponent : MonoBehaviour
             weaponStats.bulletsInClip -= 1;
             timer = weaponStats.fireRate;
         }
+    }
+
+    public void AddBulletDamage(int value)
+    {
+        weaponStats.damage += value;
+
+        game.UpdateBulletDamageHUD((int)weaponStats.damage);
     }
 
     public void StartReloading()

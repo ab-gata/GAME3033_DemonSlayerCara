@@ -27,6 +27,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField, Header("UI")] GameObject pauseUI;
 
+    private GameController game;
+
     // Input system & movement references
     private Vector2 moveInput = Vector2.zero;
     private Vector3 moveDirection = Vector2.zero;
@@ -37,6 +39,9 @@ public class PlayerBehaviour : MonoBehaviour
     public readonly int movementYHash = Animator.StringToHash("MovementY");
     public readonly int isRunningHash = Animator.StringToHash("IsSprinting");
 
+    // Player stats
+    private int health = 100;
+    private int defense = 5;
 
 
 
@@ -48,6 +53,8 @@ public class PlayerBehaviour : MonoBehaviour
 
         // make sure UI not showing
         pauseUI.SetActive(false);
+
+        game = FindObjectOfType<GameController>();
     }
 
     
@@ -90,6 +97,38 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    public void TakeDamage(int damage)
+    {
+        int netDamage = damage - defense;
+        if (netDamage > 0)
+        {
+            health -= netDamage;
+        }
+
+        if (health <= 0)
+        {
+            game.Lose();
+        }
+
+        game.UpdateStatsHUD(health, defense);
+    }
+
+    public void AddHealth(int value)
+    {
+        health += value;
+
+        if (health > 100) health = 100;
+
+        game.UpdateStatsHUD(health, defense);
+    }
+
+    public void AddDefense(int value)
+    {
+        defense += value;
+
+        game.UpdateStatsHUD(health, defense);
+    }
+
     public void OnLook(InputValue value)
     {
         lookInput = value.Get<Vector2>();
@@ -123,5 +162,10 @@ public class PlayerBehaviour : MonoBehaviour
     public void OnPause()
     {
         pauseUI.SetActive(!pauseUI.activeSelf);
+    }
+
+    public void OnInteract()
+    {
+        game.Interact();
     }
 }

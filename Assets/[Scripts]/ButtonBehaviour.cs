@@ -37,6 +37,18 @@ public class ButtonBehaviour : MonoBehaviour
         SceneManager.LoadScene("Game");
     }
 
+    public void MenuButton()
+    {
+        // Play Sound
+        soundManager.PlaySound(SoundManager.TrackID.BUTTON);
+
+        // Switch music
+        musicManager.PlayMusic(MusicManager.TrackID.MAINMENU);
+
+        // Load Scene
+        SceneManager.LoadScene("MainMenu");
+    }
+
     public void ResumeButton()
     {
         // Play Sound

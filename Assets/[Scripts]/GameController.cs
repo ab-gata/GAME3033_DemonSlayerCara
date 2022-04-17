@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -21,6 +22,13 @@ public class GameController : MonoBehaviour
     [SerializeField] private Text interactText;
     [SerializeField] private Text interactPromptText;
 
+    private DoorBehaviour doorObject;
+    private KeyBehaviour keyObject;
+    private UpgradeBehaviour upgradeObject;
+    private TomeBehaviour tomeObject;
+
+    private int keyCount = 0;
+
 
     // Start is called before the first frame update
     void Start()
@@ -31,26 +39,41 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool hit = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo, 1.5f, hitLayers);
+        bool hit = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo, 3f, hitLayers);
 
         if (hit)
         {
             if (hitInfo.collider.CompareTag("Door"))
             {
-                Debug.Log("looking at a door");
                 interactPromptText.text = "Press [E]";
+                doorObject = hitInfo.collider.GetComponent<DoorBehaviour>();
+            }
+            else if (hitInfo.collider.CompareTag("Key"))
+            {
+                interactPromptText.text = "Press [E]";
+                keyObject = hitInfo.collider.GetComponent<KeyBehaviour>();
+            }
+            else if (hitInfo.collider.CompareTag("Upgrade"))
+            {
+                interactPromptText.text = "Press [E]";
+                upgradeObject = hitInfo.collider.GetComponent<UpgradeBehaviour>();
+                interactPromptText.text = "";
             }
             else if (hitInfo.collider.CompareTag("Tome"))
             {
-                Debug.Log("looking at a tome");
-                //weaponComponent.TryShoot(hitInfo.collider.GetComponent<EnemyBehaviour>());
                 interactPromptText.text = "Press [E]";
+                tomeObject = hitInfo.collider.GetComponent<TomeBehaviour>();
             }
         }
         else
         {
             interactText.text = "";
             interactPromptText.text = "";
+
+            doorObject = null;
+            keyObject = null;
+            upgradeObject = null;
+            tomeObject = null;
         }
 
         // Mouse lock depending on if menu is shown
@@ -65,5 +88,59 @@ public class GameController : MonoBehaviour
                 Cursor.lockState = CursorLockMode.Locked;
             }
         }
+    }
+
+    private void UpdateGeneralHUD()
+    {
+        
+    }
+
+    // Called from weapon
+    public void UpdateBulletDamageHUD(int damage)
+    {
+        bulletDamageText.text = "Bullet Damage : " + damage;
+    }
+
+    // Called from player
+    public void UpdateStatsHUD(int health, int defence)
+    {
+        healthText.text = "Health : " + health + " / 100";
+        defenseText.text = "Defense : " + defence;
+    }
+
+    public void Interact()
+    {
+        if (doorObject)
+        {
+
+        }
+        if (keyObject)
+        {
+
+        }
+        if (upgradeObject)
+        {
+            switch (upgradeObject.upgrade)
+            {
+                case UpgradeType.DAMAGE:
+                    player.AddDefense(upgradeObject.value);
+                    break;
+                case UpgradeType.DEFENSE:
+                    player.AddDefense(upgradeObject.value);
+                    break;
+                case UpgradeType.HEALTH:
+                    break;
+            }
+        }
+        if (tomeObject)
+        {
+
+        }
+    }
+
+    public void Lose()
+    {
+        // Load Scene
+        SceneManager.LoadScene("GameOver");
     }
 }
