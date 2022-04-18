@@ -12,13 +12,6 @@ public class EnemyRespawner : MonoBehaviour
     [SerializeField]
     private float respawnCountdown = 10.0f;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -31,13 +24,12 @@ public class EnemyRespawner : MonoBehaviour
             }
             else if (respawnTimer <= 0.0f)
             {
-                gameObject.SetActive(true);
+                demon.SetActive(true);
             }
         }
         else if (demon.activeSelf)
         {
             respawnTimer = respawnCountdown;
         }
-
     }
 }

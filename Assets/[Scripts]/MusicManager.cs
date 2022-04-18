@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MusicManager : MonoBehaviour
 {
-    private float volume = 0.5f;
+    private float volume = 0.6f;
     // Music manager, a singleton
     private MusicManager() { }
 
@@ -34,7 +34,8 @@ public class MusicManager : MonoBehaviour
     public enum TrackID
     {
         MAINMENU,
-        ATTACK
+        ATTACK,
+        PHASE2
     }
 
     // Start is called before the first frame update

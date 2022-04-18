@@ -15,6 +15,7 @@ public class EnemyBehaviour : MonoBehaviour
 {
     [SerializeField]
     private float health = 15;
+    private float initialHealth;
 
     [SerializeField]
     private float damage = 10;
@@ -38,8 +39,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     public readonly int IsMovingHash = Animator.StringToHash("IsMoving");
     public readonly int IsAttackingHash = Animator.StringToHash("IsAttacking");
-
-    private Vector3 initialPosition;
+    public readonly int DamageHash = Animator.StringToHash("Damaged");
+    public Vector3 initialPosition;
 
     private void Start()
     {
@@ -52,31 +53,35 @@ public class EnemyBehaviour : MonoBehaviour
         target = player.transform;
         agent.enabled = true;
 
-        // Save initial position for later
+        // Save initial values for respawn
         initialPosition = transform.position;
+        initialHealth = health;
     }
 
     private void Update()
     {
         // Check if can see target, if so change state to chase
-        float distance = Vector3.Distance(target.position, transform.position);
-        if (distance <= detectionRadius)
+        float yPosDif = target.position.y - transform.position.y;
+        if (yPosDif <= 2 && yPosDif >= -2)
         {
-            state = EnemyState.CHASE;
-
-            // If target is within attack range, change to attack state
-            if (distance <= attackRadius)
+            float distance = Vector3.Distance(target.position, transform.position);
+            if (distance <= detectionRadius)
             {
-                state = EnemyState.ATTACK;
-                animator.SetBool(IsAttackingHash, true);
-                //soundManager.PlayEnemyAttackSFX();
-            }
-            else
-            {
-                animator.SetBool(IsMovingHash, true);
-                animator.SetBool(IsAttackingHash, false);
-            }
+                state = EnemyState.CHASE;
 
+                // If target is within attack range, change to attack state
+                if (distance <= attackRadius)
+                {
+                    state = EnemyState.ATTACK;
+                    animator.SetBool(IsAttackingHash, true);
+                    //soundManager.PlayEnemyAttackSFX();
+                }
+                else
+                {
+                    animator.SetBool(IsMovingHash, true);
+                    animator.SetBool(IsAttackingHash, false);
+                }
+            }
         }
         else
         {
@@ -108,7 +113,7 @@ public class EnemyBehaviour : MonoBehaviour
     public void ShotAt(float damage)
     {
         health -= damage;
-        Debug.Log(health);
+        animator.SetTrigger(DamageHash);
 
         if (health <= 0)
         {

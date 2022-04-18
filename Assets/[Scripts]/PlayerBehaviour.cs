@@ -31,6 +31,7 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField, Header("UI")] GameObject pauseUI;
 
     private GameController game;
+    private AudioSource audio;
 
     // Input system & movement references
     private Vector2 moveInput = Vector2.zero;
@@ -60,6 +61,7 @@ public class PlayerBehaviour : MonoBehaviour
         pauseUI.SetActive(false);
 
         game = FindObjectOfType<GameController>();
+        audio = GetComponent<AudioSource>();
     }
 
     
@@ -119,6 +121,7 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 health--;
             }
+            audio.Play();
             cooldown = 1.5f;
             bloodImage.color = new Color(1, 0, 0, .3f * (100 - health) / 100);
 

@@ -9,6 +9,7 @@ TagManager:
   - Tome
   - Key
   - Upgrade
+  - Escape
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - Water
   - UI
   - Enemy
-  - 
+  - Environment
   - 
   - 
   - 

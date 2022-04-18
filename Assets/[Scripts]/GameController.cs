@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
     [SerializeField, Header("User Interface")] private GameObject pauseUI;
     [SerializeField] private Text objectiveText;
     [SerializeField] private Text timeTitleText;
+    [SerializeField] private Text distanceText;
     [SerializeField] private Text timeText;
     [SerializeField] private Text keysText;
     [SerializeField] private Text healthText;
@@ -28,6 +29,12 @@ public class GameController : MonoBehaviour
     private GameObject keyObject;
     private UpgradeBehaviour upgradeObject;
     private GameObject tomeObject;
+    private GameObject escapeObject;
+
+    [SerializeField]
+    private GameObject escapeLocation;
+    [SerializeField]
+    private GameObject tomeLocation;
 
     private int keyCount = 0;
     private string objective = "Find the Tome of Evil";
@@ -35,10 +42,15 @@ public class GameController : MonoBehaviour
     public bool phase2 = false;
     private float timer = 100;
 
+    private SoundManager sound;
+    private MusicManager music;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        sound = FindObjectOfType<SoundManager>();
+        music = FindObjectOfType<MusicManager>();
         Cursor.lockState = CursorLockMode.Locked;
         UpdateGeneralHUD();
     }
@@ -75,6 +87,12 @@ public class GameController : MonoBehaviour
                 interactPromptText.text = "Press [E]";
                 tomeObject = hitInfo.collider.gameObject;
             }
+            else if (hitInfo.collider.CompareTag("Escape"))
+            {
+                interactText.text = "EXIT : Escape here with the Tome of Evil!";
+                interactPromptText.text = "Press [E]";
+                escapeObject = hitInfo.collider.gameObject;
+            }
         }
         else
         {
@@ -85,6 +103,7 @@ public class GameController : MonoBehaviour
             keyObject = null;
             upgradeObject = null;
             tomeObject = null;
+            escapeObject = null;
         }
 
         // Timer for phase 2
@@ -112,6 +131,17 @@ public class GameController : MonoBehaviour
                 Cursor.lockState = CursorLockMode.Locked;
                 Time.timeScale = 1.0f;
             }
+        }
+
+        if (phase2)
+        {
+            float distance = Vector3.Distance(escapeLocation.transform.position, player.transform.position);
+            distanceText.text = ((int)distance).ToString() + " m";
+        }
+        else
+        {
+            float distance = Vector3.Distance(tomeLocation.transform.position, player.transform.position);
+            distanceText.text = ((int)distance).ToString() + " m";
         }
     }
 
@@ -190,9 +220,14 @@ public class GameController : MonoBehaviour
         if (tomeObject)
         {
             phase2 = true;
+            music.PlayMusic(MusicManager.TrackID.PHASE2);
             tomeObject.SetActive(false);
             timeTitleText.text = "TIME LEFT";
-            objectiveText.text = "Return to where you entered quickly!";
+            objective = "Find the Exit!!!";
+        }
+        if (escapeObject)
+        {
+            Win();
         }
 
         UpdateGeneralHUD();
@@ -201,6 +236,17 @@ public class GameController : MonoBehaviour
     public void Lose()
     {
         // Load Scene
+        sound.PlaySound(SoundManager.TrackID.LOSE);
         SceneManager.LoadScene("GameOver");
+    }
+
+    public void Win()
+    {
+        if (phase2)
+        {
+            // Load Scene
+            sound.PlaySound(SoundManager.TrackID.WIN);
+            SceneManager.LoadScene("GameOverWin");
+        }
     }
 }

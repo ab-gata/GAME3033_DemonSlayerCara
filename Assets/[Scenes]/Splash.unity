@@ -252,6 +252,7 @@ MonoBehaviour:
   music:
   - {fileID: 8300000, guid: 17771ed7a4344ab4eacc406c038196aa, type: 3}
   - {fileID: 8300000, guid: 460f6d8a145539d4295ecb26a26fdfbf, type: 3}
+  - {fileID: 8300000, guid: 630d41b2db0ca8d468243ea2144b55fd, type: 3}
 --- !u!4 &349323020
 Transform:
   m_ObjectHideFlags: 0
@@ -344,7 +345,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 714, y: 602}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &970295704
 MonoBehaviour:
@@ -366,7 +367,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: ac4ba96f88a55f4468a38fab9df94eb6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -681,6 +682,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 2ceb684b3ef7c134cb5f1a01ca79234d, type: 3}
   - {fileID: 8300000, guid: 83aa86e9dc82bf4498b11384fce8994f, type: 3}
   - {fileID: 8300000, guid: a4751ecf07bfbd84e8564f35a0263f71, type: 3}
+  - {fileID: 8300000, guid: bf76a7d1460a9e2449a3f8e7e81a9710, type: 3}
 --- !u!4 &1421512423
 Transform:
   m_ObjectHideFlags: 0

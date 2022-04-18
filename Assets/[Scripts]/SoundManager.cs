@@ -34,7 +34,8 @@ public class SoundManager : MonoBehaviour
     {
         BUTTON,
         WIN,
-        LOSE
+        LOSE,
+        LASER
     }
 
     // Start is called before the first frame update

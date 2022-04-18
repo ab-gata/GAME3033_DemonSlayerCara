@@ -33,6 +33,7 @@ public class WeaponComponent : MonoBehaviour
     public bool isReloading;
 
     private GameController game;
+    private SoundManager sound;
 
     // Weapon Effects
     [SerializeField] protected ParticleSystem firingEffect;
@@ -46,6 +47,7 @@ public class WeaponComponent : MonoBehaviour
     {
         game = FindObjectOfType<GameController>();
         game.UpdateBulletDamageHUD((int)weaponStats.damage);
+        sound = FindObjectOfType<SoundManager>();
     }
 
     private void Update()
@@ -60,6 +62,7 @@ public class WeaponComponent : MonoBehaviour
     {
         if (timer <= 0)
         {
+            sound.PlaySound(SoundManager.TrackID.LASER);
             eb.ShotAt(weaponStats.damage);
             //weaponStats.bulletsInClip -= 1;
             timer = weaponStats.fireRate;
